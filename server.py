@@ -69,18 +69,21 @@ class RequestHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode('utf-8')
-        data = urllib.parse.parse_qs(post_data)
+        data = json.loads(post_data)
 
         if self.path == '/create_data':
             self._create_data(data)
 
     def _create_data(self, data):
         try:
-            data_value = data.get('data', [''])[0]
+            data_value = data.get('data', ['']).strip()
 
-            with db.cursor() as cursor:
-                cursor.execute("INSERT INTO data (data) VALUES (%s)", (data_value,))
-                db.commit()
+            print(f"Received data: {data_value}")
+
+            if data_value:  # 빈 문자열이 아닌 경우에만 데이터베이스에 추가
+                with db.cursor() as cursor:
+                    cursor.execute("INSERT INTO data (data) VALUES (%s)", (data_value,))
+                    db.commit()
 
             self._set_response(content_type='application/json')
             self.wfile.write(b'{"status": "success"}')

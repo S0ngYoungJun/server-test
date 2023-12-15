@@ -29,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function createData() {
     const dataInput = document.getElementById('dataInput');
     const data = dataInput.value;
-  
+
+    console.log('Sending data:', data); // 데이터를 콘솔에 출력
+
     // AJAX를 사용하여 서버에 데이터 전송
     fetch('/create_data', {
         method: 'POST',
@@ -44,5 +46,4 @@ document.addEventListener('DOMContentLoaded', function () {
         dataInput.value = ''; // 입력창 초기화
     })
     .catch(error => console.error('데이터 생성 중 오류 발생:', error));
-  }
-  
+}
